@@ -114,3 +114,91 @@ main {
   font-size: 1.3rem;
   text-align: center;
 }
+
+/* ---------- Écran de jeu ---------- */
+
+.enonce {
+  margin: 1rem 0 0.5rem;
+  font-size: clamp(2.5rem, 12vw, 4.5rem); /* grand, mais s'adapte à l'écran */
+  font-weight: bold;
+  text-align: center;
+}
+
+.ecouter,
+.retour {
+  display: block;
+  margin: 0.5rem auto;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 1.2rem;
+  background: white;
+  box-shadow: 0 0.2rem 0 rgb(0 0 0 / 0.15);
+  cursor: pointer;
+}
+
+/* Réponses : 2 colonnes sur tous les écrans (4 réponses = un carré). */
+.reponses {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 32rem;
+  margin: 1rem auto;
+}
+
+.reponse {
+  min-height: 5rem;
+  border: none;
+  border-radius: 1.25rem;
+  font: inherit;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  background: #3498db;
+  box-shadow: 0 0.3rem 0 rgb(0 0 0 / 0.2);
+  cursor: pointer;
+}
+
+.reponse:disabled {
+  cursor: not-allowed;
+}
+
+/* Mauvaise réponse cliquée : grisée et barrée. */
+.reponse.fausse {
+  background: #b2bec3;
+  text-decoration: line-through;
+  animation: secousse 0.4s;
+}
+
+/* Bonne réponse : verte et qui grossit. */
+.reponse.juste {
+  background: #27ae60;
+  animation: saut 0.5s;
+}
+
+/* Pendant le blocage d'une seconde, tous les boutons pâlissent. */
+.reponses.bloquee .reponse:not(.juste) {
+  opacity: 0.5;
+}
+
+@keyframes secousse {
+  25% { transform: translateX(-0.5rem); }
+  75% { transform: translateX(0.5rem); }
+}
+
+@keyframes saut {
+  50% { transform: scale(1.15); }
+}
+
+/* Étoile qui pulse quand le score change. */
+.score.change {
+  animation: saut 0.5s;
+}
+
+/* Respecte le réglage "réduire les animations" de l'appareil. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}
