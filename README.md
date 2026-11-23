@@ -123,6 +123,9 @@ pour confirmer, afin qu'un enfant ne puisse pas tout effacer par accident.
 2. **Important** : dans `src/sw.js`, augmenter le numéro `VERSION`
    (`supercp-v1` → `supercp-v2`) quand des fichiers de l'appli changent,
    sinon les appareils garderont l'ancienne version.
+3. Si la publication échoue quand même (croix rouge dans **Actions** >
+   **Publication**) : bouton **Run workflow** sur la branche `main`.
+   Éviter « Re-run failed jobs », qui peut créer un paquet en double.
 
 ## Vérification automatique (CI)
 
