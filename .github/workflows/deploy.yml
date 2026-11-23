@@ -15,10 +15,11 @@ permissions:
   pages: write
   id-token: write
 
-# Une seule publication à la fois ; une nouvelle remplace celle en attente.
+# Une seule publication à la fois. Une publication déjà commencée va jusqu'au bout
+# (l'interrompre au milieu peut laisser GitHub Pages dans un état bancal).
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # 1. On revérifie le code : on ne publie jamais une version cassée.
@@ -35,19 +36,33 @@ jobs:
       - run: npm run lint
       - run: npm test
 
-  # 2. On publie le dossier src/ (l'appli) sur GitHub Pages.
-  publier:
-    name: Publier sur GitHub Pages
+  # 2. On prépare le paquet à publier : le dossier src/ (l'appli), mis de côté
+  #    sous le nom "github-pages" (un "artefact" = un fichier produit par un job).
+  preparer:
+    name: Préparer le paquet
     needs: verifier # attend que la vérification réussisse
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.publication.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: src
+
+  # 3. On publie ce paquet sur GitHub Pages, dans un job SÉPARÉ.
+  #    Pourquoi séparé : juste après l'envoi du paquet, GitHub met quelques secondes
+  #    à le "voir". Quand l'envoi et la publication étaient dans le même job,
+  #    la publication cherchait le paquet 0,3 seconde après l'envoi, ne le trouvait
+  #    pas encore ("No artifacts named github-pages") et échouait.
+  #    Le démarrage d'un nouveau job laisse ce délai. C'est aussi le découpage
+  #    du modèle officiel de GitHub pour Pages.
+  publier:
+    name: Publier sur GitHub Pages
+    needs: preparer # attend que le paquet soit envoyé
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publication.outputs.page_url }}
+    steps:
       - id: publication
         uses: actions/deploy-pages@v4
