@@ -1,0 +1,44 @@
+# Workflow d'intégration continue (CI) : GitHub exécute ces étapes
+# automatiquement sur ses propres ordinateurs à chaque modification.
+# Ce fichier est écrit en YAML : l'indentation (les espaces en début
+# de ligne) définit la structure. N'utilisez jamais de tabulations.
+
+name: CI
+
+# Quand lancer le workflow :
+on:
+  push: # à chaque envoi de commits sur n'importe quelle branche
+  pull_request: # à chaque pull request (ouverture ou mise à jour)
+
+# Droits minimaux : le workflow peut seulement LIRE le dépôt.
+permissions:
+  contents: read
+
+jobs:
+  verifier:
+    name: Linter et tests
+    runs-on: ubuntu-latest # machine Linux fournie gratuitement par GitHub
+    steps:
+      # 1. Récupère le code du dépôt sur la machine de GitHub.
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      # 2. Installe Node.js (le programme qui exécute le JavaScript hors navigateur).
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm # garde les dépendances en cache pour aller plus vite
+
+      # 3. Installe les dépendances listées dans package-lock.json.
+      #    "npm ci" installe exactement les versions enregistrées.
+      - name: Installer les dépendances
+        run: npm ci
+
+      # 4. Lance le linter (ESLint) : échoue s'il trouve une erreur.
+      - name: Linter
+        run: npm run lint
+
+      # 5. Lance les tests unitaires : échoue si un test ne passe pas.
+      - name: Tests
+        run: npm test

@@ -1,0 +1,4 @@
+# Uniformise les fins de ligne (Windows utilise CRLF, Linux et GitHub utilisent LF).
+# Sans ce fichier, Git peut signaler des fichiers "modifiés" alors qu'ils ne le sont pas.
+* text=auto eol=lf
+*.png binary
