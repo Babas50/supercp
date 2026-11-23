@@ -31,8 +31,13 @@ supercp/
 │       ├── moteur/
 │       │   ├── question.js   ← règles d'une question et anti-triche
 │       │   └── progression.js← étoiles, niveaux, stickers, sauvegarde
+│       ├── donnees/
+│       │   └── mots.js       ← liste des mots et images (à relire)
 │       └── matieres/
-│           └── calcul.js     ← additions et soustractions
+│           ├── calcul.js     ← additions et soustractions
+│           ├── lettres.js    ← lettres
+│           ├── chiffres.js   ← compter, nombre suivant
+│           └── mots.js       ← lire et écouter des mots
 ├── tests/                    ← tests unitaires
 ├── eslint.config.js          ← règles du linter
 ├── package.json              ← nom du projet, commandes, dépendances

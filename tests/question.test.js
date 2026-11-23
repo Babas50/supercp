@@ -106,18 +106,37 @@ test("les étoiles ne descendent jamais sous zéro", () => {
 test("sansRepetition : jamais deux énoncés identiques de suite", () => {
   // Générateur qui ne connaît que 2 énoncés : le risque de répétition est fort.
   let n = 0;
-  const generer = () => ({ enonce: n++ % 3 === 0 ? "A" : "B" });
+  const generer = () => {
+    const lettre = n++ % 3 === 0 ? "A" : "B";
+    return { enonce: lettre, cle: lettre };
+  };
   const suivante = sansRepetition(generer);
-  let precedent = suivante().enonce;
+  let precedent = suivante().cle;
   for (let k = 0; k < 200; k++) {
-    const actuel = suivante().enonce;
+    const actuel = suivante().cle;
     assert.notEqual(actuel, precedent);
     precedent = actuel;
   }
 });
 
+test("sansRepetition : compare la clé, pas l'énoncé affiché", () => {
+  // Deux questions "🔊" différentes (mots entendus différents) peuvent se suivre.
+  let n = 0;
+  const suivante = sansRepetition(() => ({ enonce: "🔊", cle: n++ % 2 ? "chat" : "lune" }));
+  assert.doesNotThrow(() => {
+    for (let k = 0; k < 10; k++) suivante();
+  });
+});
+
+test("une question garde sa consigne et sa clé", () => {
+  const q = creerQuestion({ enonce: "🔊", cle: "chat", consigne: "Écoute", bonneReponse: "chat", distracteurs: ["chien"] });
+  assert.equal(q.cle, "chat");
+  assert.equal(q.consigne, "Écoute");
+  assert.equal(questionExemple().cle, "2 + 3 = ?");
+});
+
 test("sansRepetition : signale un générateur qui ne sait faire qu'un énoncé", () => {
-  const suivante = sansRepetition(() => ({ enonce: "toujours pareil" }));
+  const suivante = sansRepetition(() => ({ enonce: "🔊", cle: "toujours pareil" }));
   suivante();
   assert.throws(() => suivante());
 });

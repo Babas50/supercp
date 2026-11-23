@@ -12,6 +12,9 @@ import {
   ETOILES_PAR_STICKER,
 } from "./moteur/progression.js";
 import { genererAddition, genererSoustraction } from "./matieres/calcul.js";
+import { genererLettre } from "./matieres/lettres.js";
+import { genererChiffre } from "./matieres/chiffres.js";
+import { genererMot } from "./matieres/mots.js";
 import { lire } from "./voix.js";
 import { sonBravo, sonErreur } from "./son.js";
 import { activerHorsConnexion, preparerInstallation } from "./installation.js";
@@ -19,9 +22,9 @@ import { activerHorsConnexion, preparerInstallation } from "./installation.js";
 // Liste des matières : nom affiché, icône (emoji), couleur de la tuile
 // et "generer" = la fonction qui fabrique une question (absente = pas encore prête).
 const MATIERES = [
-  { id: "lettres", nom: "Lettres", icone: "🔤", couleur: "#e74c3c" },
-  { id: "chiffres", nom: "Chiffres", icone: "🔢", couleur: "#e67e22" },
-  { id: "mots", nom: "Mots", icone: "📖", couleur: "#d4a20b" },
+  { id: "lettres", nom: "Lettres", icone: "🔤", couleur: "#e74c3c", generer: genererLettre },
+  { id: "chiffres", nom: "Chiffres", icone: "🔢", couleur: "#e67e22", generer: genererChiffre },
+  { id: "mots", nom: "Mots", icone: "📖", couleur: "#d4a20b", generer: genererMot },
   { id: "phrases", nom: "Phrases", icone: "✏️", couleur: "#2ecc71" },
   { id: "additions", nom: "Additions", icone: "➕", couleur: "#1abc9c", generer: genererAddition },
   { id: "soustractions", nom: "Soustractions", icone: "➖", couleur: "#3498db", generer: genererSoustraction },
@@ -135,15 +138,18 @@ function demarrer(matiere, niveau) {
 
 function poserQuestion() {
   question = questionSuivante();
+  $("consigne-jeu").textContent = question.consigne;
   $("enonce").textContent = question.enonce;
   $("message-jeu").textContent = "";
   const zone = $("reponses");
   zone.innerHTML = "";
   zone.classList.remove("bloquee");
+  // Réponses longues (des mots) : police plus petite pour tenir dans le bouton.
+  const reponsesLongues = question.choix.some((c) => String(c).length > 3);
   for (const choix of question.choix) {
     const bouton = document.createElement("button");
     bouton.type = "button";
-    bouton.className = "reponse";
+    bouton.className = reponsesLongues ? "reponse reponse-mot" : "reponse";
     bouton.textContent = choix;
     bouton.dataset.valeur = String(choix); // garde la valeur pour la retrouver plus tard
     bouton.addEventListener("click", () => cliquer(choix, bouton));

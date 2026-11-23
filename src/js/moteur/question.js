@@ -15,6 +15,9 @@ export const ERREURS_MAX = 2;
  * Crée une question.
  * - enonce : le texte affiché (ex. "3 + 4")
  * - aLire : le texte lu à voix haute (par défaut, l'énoncé)
+ * - consigne : petite phrase affichée au-dessus (ex. "Combien y en a-t-il ?")
+ * - cle : ce qui identifie la question pour éviter les répétitions
+ *         (par défaut, l'énoncé ; utile quand l'énoncé est juste "🔊")
  * - bonneReponse : la réponse attendue
  * - distracteurs : les mauvaises réponses proposées
  *
@@ -23,17 +26,19 @@ export const ERREURS_MAX = 2;
 export function creerQuestion({
   enonce,
   aLire = enonce,
+  consigne = "",
+  cle = enonce,
   bonneReponse,
   distracteurs,
   hasard = Math.random,
 }) {
   // On compare les réponses sous forme de texte : 7 et "7" sont la même réponse.
-  const cle = (valeur) => String(valeur);
-  const dejaVues = new Set([cle(bonneReponse)]);
+  const texte = (valeur) => String(valeur);
+  const dejaVues = new Set([texte(bonneReponse)]);
   const mauvaises = [];
   for (const d of distracteurs) {
-    if (!dejaVues.has(cle(d))) {
-      dejaVues.add(cle(d));
+    if (!dejaVues.has(texte(d))) {
+      dejaVues.add(texte(d));
       mauvaises.push(d);
     }
   }
@@ -44,6 +49,8 @@ export function creerQuestion({
   return {
     enonce,
     aLire,
+    consigne,
+    cle,
     bonneReponse,
     // Mélange : la bonne réponse n'est jamais toujours à la même place.
     choix: melanger([bonneReponse, ...mauvaises], hasard),
@@ -102,19 +109,19 @@ export function ajouterEtoiles(total, delta) {
 
 /**
  * Enveloppe un générateur de questions pour qu'il ne produise jamais
- * deux fois de suite le même énoncé.
+ * deux fois de suite la même question (même "cle").
  */
 export function sansRepetition(generer, essaisMax = 50) {
   let precedent = null;
   return function suivante() {
     let question = generer();
-    for (let i = 0; i < essaisMax && precedent !== null && question.enonce === precedent; i++) {
+    for (let i = 0; i < essaisMax && precedent !== null && question.cle === precedent; i++) {
       question = generer();
     }
-    if (precedent !== null && question.enonce === precedent) {
+    if (precedent !== null && question.cle === precedent) {
       throw new Error("Impossible de trouver une question différente de la précédente.");
     }
-    precedent = question.enonce;
+    precedent = question.cle;
     return question;
   };
 }
