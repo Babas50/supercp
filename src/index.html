@@ -16,10 +16,29 @@
     </header>
 
     <main>
-      <p class="consigne">Choisis une activité !</p>
-      <!-- Les tuiles des matières sont ajoutées ici par js/app.js -->
-      <nav id="matieres" class="grille" aria-label="Matières"></nav>
-      <p id="message" class="message" role="status"></p>
+      <!-- Écran 1 : l'accueil avec les matières -->
+      <section id="ecran-accueil">
+        <p class="consigne">Choisis une activité !</p>
+        <!-- Les tuiles des matières sont ajoutées ici par js/app.js -->
+        <nav id="matieres" class="grille" aria-label="Matières"></nav>
+        <p id="message-accueil" class="message" role="status"></p>
+      </section>
+
+      <!-- Écran 2 : le choix du niveau (caché au départ grâce à "hidden") -->
+      <section id="ecran-niveaux" hidden>
+        <p class="consigne" id="titre-niveaux"></p>
+        <div class="grille" id="niveaux"></div>
+        <button type="button" class="retour" data-retour>🏠 Accueil</button>
+      </section>
+
+      <!-- Écran 3 : une question -->
+      <section id="ecran-jeu" hidden>
+        <p class="enonce" id="enonce"></p>
+        <button type="button" class="ecouter" id="ecouter">🔊 Écouter</button>
+        <div class="reponses" id="reponses"></div>
+        <p id="message-jeu" class="message" role="status"></p>
+        <button type="button" class="retour" data-retour>🏠 Accueil</button>
+      </section>
     </main>
 
     <!-- type="module" : permet d'utiliser import / export dans le navigateur -->

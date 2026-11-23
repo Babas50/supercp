@@ -17,8 +17,14 @@ supercp/
 │   ├── index.html            ← la page
 │   ├── styles.css            ← couleurs et mise en page
 │   └── js/
-│       ├── app.js            ← écran d'accueil
-│       └── aleatoire.js      ← hasard et anti-répétition
+│       ├── app.js            ← écrans et déroulement du jeu
+│       ├── aleatoire.js      ← hasard et anti-répétition
+│       ├── voix.js           ← lecture à voix haute
+│       ├── son.js            ← sons de réussite et d'erreur
+│       ├── moteur/
+│       │   └── question.js   ← règles d'une question et anti-triche
+│       └── matieres/
+│           └── calcul.js     ← additions et soustractions
 ├── tests/                    ← tests unitaires
 ├── eslint.config.js          ← règles du linter
 ├── package.json              ← nom du projet, commandes, dépendances
@@ -45,6 +51,16 @@ supercp/
 | `npm run lint`    | vérifie le code avec ESLint                           |
 | `npm test`        | lance les tests unitaires                             |
 | `npm start`       | ouvre l'application sur http://localhost:3000         |
+
+## Règles du jeu (anti-triche)
+
+- Bonne réponse : +1 étoile, son joyeux, animation.
+- Mauvaise réponse : -1 étoile (jamais sous zéro), message doux, la réponse
+  cliquée est grisée.
+- Après une erreur, tous les boutons sont bloqués 1 seconde.
+- Après 2 erreurs, la bonne réponse est montrée, sans étoile.
+- La bonne réponse change de place à chaque question.
+- Jamais deux fois la même question de suite, jamais deux réponses identiques.
 
 ## Vérification automatique (CI)
 
