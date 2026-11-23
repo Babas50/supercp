@@ -1,0 +1,116 @@
+/* Feuille de style : couleurs, tailles et disposition de l'application. */
+
+/* Variables de couleurs réutilisées partout. */
+:root {
+  --fond: #fff8e7;
+  --texte: #2d2a32;
+  --accent: #ff7a59;
+}
+
+/* box-sizing: border-box : la largeur d'un élément inclut ses marges internes.
+   Évite qu'un élément dépasse de l'écran et crée un défilement horizontal. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  overflow-x: hidden; /* sécurité : jamais de défilement horizontal */
+}
+
+body {
+  font-family: "Comic Sans MS", "Chalkboard SE", "Trebuchet MS", sans-serif;
+  background: var(--fond);
+  color: var(--texte);
+  /* Laisse de la place pour l'encoche des iPhone. */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--accent);
+  color: white;
+}
+
+.entete h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.score {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+main {
+  max-width: 60rem; /* sur grand écran, le contenu ne s'étale pas trop */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.consigne {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* Grille des matières :
+   - mobile : 1 colonne (tout est vertical)
+   - tablette : 2 colonnes
+   - ordinateur : 3 colonnes */
+.grille {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .grille {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  .grille {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tuile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 4.5rem; /* gros boutons, faciles à toucher avec un doigt d'enfant */
+  padding: 1rem;
+  border: none;
+  border-radius: 1.25rem;
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0.3rem 0 rgb(0 0 0 / 0.2);
+  transition: transform 0.1s;
+}
+
+.tuile:active {
+  transform: translateY(0.2rem); /* effet "bouton enfoncé" */
+}
+
+.tuile .icone {
+  font-size: 2rem;
+}
+
+.message {
+  min-height: 2rem;
+  font-size: 1.3rem;
+  text-align: center;
+}

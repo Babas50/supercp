@@ -1,0 +1,21 @@
+# Fichier .gitignore : liste des fichiers que Git doit IGNORER
+# (ils ne seront jamais envoyés sur GitHub).
+
+# Dépendances téléchargées par npm (recréées avec "npm install")
+node_modules/
+
+# Journaux d'erreurs de npm
+npm-debug.log*
+
+# Fichiers créés automatiquement par Windows et macOS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Réglages personnels des éditeurs de code
+.vscode/
+.idea/
+
+# Fichiers de secrets ou de configuration locale : à ne JAMAIS publier
+.env
+.env.*
