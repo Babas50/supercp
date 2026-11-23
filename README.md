@@ -42,7 +42,11 @@ supercp/
 │           ├── chiffres.js   ← compter, nombre suivant
 │           ├── mots.js       ← lire et écouter des mots
 │           ├── phrases.js    ← mot manquant, phrase de l'image, ordre des mots
-│           └── anglais.js    ← couleurs, animaux, nombres (voix anglaise)
+│           ├── anglais.js    ← couleurs, animaux, nombres (voix anglaise)
+│           ├── dictee.js     ← mot ou phrase entendus, bonne orthographe
+│           ├── heure.js      ← horloge à aiguilles
+│           ├── formes.js     ← reconnaître et compter des formes
+│           └── calendrier.js ← jours de la semaine et mois
 ├── tests/                    ← tests unitaires
 ├── eslint.config.js          ← règles du linter
 ├── package.json              ← nom du projet, commandes, dépendances

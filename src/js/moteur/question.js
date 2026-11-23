@@ -15,6 +15,7 @@ export const ERREURS_MAX = 2;
  * Crée une question.
  * - enonce : le texte affiché (ex. "3 + 4")
  * - aLire : le texte lu à voix haute (par défaut, l'énoncé)
+ * - illustration : dessin SVG affiché sous l'énoncé (horloge, formes), facultatif
  * - langue : langue de la voix ("fr-FR" par défaut, "en-GB" pour l'anglais)
  * - consigne : petite phrase affichée au-dessus (ex. "Combien y en a-t-il ?")
  * - cle : ce qui identifie la question pour éviter les répétitions
@@ -30,6 +31,7 @@ export function creerQuestion({
   consigne = "",
   cle = enonce,
   langue = "fr-FR",
+  illustration = "",
   bonneReponse,
   distracteurs,
   hasard = Math.random,
@@ -54,6 +56,7 @@ export function creerQuestion({
     consigne,
     cle,
     langue,
+    illustration,
     bonneReponse,
     // Mélange : la bonne réponse n'est jamais toujours à la même place.
     choix: melanger([bonneReponse, ...mauvaises], hasard),

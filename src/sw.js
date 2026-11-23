@@ -4,7 +4,7 @@
 
 // IMPORTANT : changez ce numéro à chaque mise à jour de l'appli,
 // sinon les appareils garderont l'ancienne version en mémoire.
-const VERSION = "supercp-v3";
+const VERSION = "supercp-v4";
 
 // Liste des fichiers à garder sur l'appareil.
 const FICHIERS = [
@@ -26,6 +26,10 @@ const FICHIERS = [
   "./js/matieres/mots.js",
   "./js/matieres/phrases.js",
   "./js/matieres/anglais.js",
+  "./js/matieres/dictee.js",
+  "./js/matieres/heure.js",
+  "./js/matieres/formes.js",
+  "./js/matieres/calendrier.js",
   "./js/donnees/mots.js",
   "./js/donnees/phrases.js",
   "./js/donnees/anglais.js",

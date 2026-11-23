@@ -350,3 +350,21 @@ main {
 .reponses.reponses-phrases {
   grid-template-columns: 1fr;
 }
+
+/* ---------- Dessins (horloge, formes) ---------- */
+
+.illustration {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.illustration svg {
+  width: min(60vw, 14rem); /* grand, sans jamais dépasser l'écran */
+  height: auto;
+}
+
+/* "display: flex" ci-dessus annulerait l'attribut hidden : on le rétablit. */
+.illustration[hidden] {
+  display: none;
+}

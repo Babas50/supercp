@@ -17,6 +17,10 @@ import { genererChiffre } from "./matieres/chiffres.js";
 import { genererMot } from "./matieres/mots.js";
 import { genererPhrase } from "./matieres/phrases.js";
 import { genererAnglais } from "./matieres/anglais.js";
+import { genererDictee } from "./matieres/dictee.js";
+import { genererHeure } from "./matieres/heure.js";
+import { genererForme } from "./matieres/formes.js";
+import { genererCalendrier } from "./matieres/calendrier.js";
 import { creerPartie, toucherCarte, cacherRatees } from "./moteur/memory.js";
 import { lire } from "./voix.js";
 import { sonBravo, sonErreur } from "./son.js";
@@ -34,10 +38,10 @@ const MATIERES = [
   { id: "soustractions", nom: "Soustractions", icone: "➖", couleur: "#3498db", generer: genererSoustraction },
   { id: "anglais", nom: "Anglais", icone: "🇬🇧", couleur: "#9b59b6", generer: genererAnglais },
   { id: "memory", nom: "Memory", icone: "🃏", couleur: "#e84393", jeu: "memory" },
-  { id: "dictee", nom: "Dictée", icone: "👂", couleur: "#16a085" },
-  { id: "heure", nom: "L'heure", icone: "🕒", couleur: "#d35400" },
-  { id: "formes", nom: "Formes", icone: "🔺", couleur: "#2980b9" },
-  { id: "calendrier", nom: "Jours et mois", icone: "📅", couleur: "#8e44ad" },
+  { id: "dictee", nom: "Dictée", icone: "👂", couleur: "#16a085", generer: genererDictee },
+  { id: "heure", nom: "L'heure", icone: "🕒", couleur: "#d35400", generer: genererHeure },
+  { id: "formes", nom: "Formes", icone: "🔺", couleur: "#2980b9", generer: genererForme },
+  { id: "calendrier", nom: "Jours et mois", icone: "📅", couleur: "#8e44ad", generer: genererCalendrier },
 ];
 
 const NIVEAUX = [
@@ -148,6 +152,10 @@ function poserQuestion() {
   question = questionSuivante();
   $("consigne-jeu").textContent = question.consigne;
   $("enonce").textContent = question.enonce;
+  $("enonce").hidden = question.enonce === "";
+  // Dessin (horloge, forme) : SVG fabriqué par l'appli elle-même, donc sans risque.
+  $("illustration").innerHTML = question.illustration;
+  $("illustration").hidden = question.illustration === "";
   $("message-jeu").textContent = "";
   const zone = $("reponses");
   zone.innerHTML = "";
