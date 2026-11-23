@@ -1,6 +1,16 @@
 // Point d'entrée de l'application : gère les écrans et le déroulement du jeu.
 
-import { repondre, ajouterEtoiles, sansRepetition, DELAI_BLOCAGE_MS } from "./moteur/question.js";
+import { repondre, sansRepetition, DELAI_BLOCAGE_MS } from "./moteur/question.js";
+import {
+  charger,
+  sauvegarder,
+  niveauDebloque,
+  reussitesManquantes,
+  enregistrerResultat,
+  stickersGagnes,
+  STICKERS,
+  ETOILES_PAR_STICKER,
+} from "./moteur/progression.js";
 import { genererAddition, genererSoustraction } from "./matieres/calcul.js";
 import { lire } from "./voix.js";
 import { sonBravo, sonErreur } from "./son.js";
@@ -33,8 +43,13 @@ const BRAVOS = ["Bravo !", "Super !", "Génial !", "Excellent !", "Trop fort !"]
 // Raccourci pour trouver un élément de la page par son id.
 const $ = (id) => document.getElementById(id);
 
-// État du jeu en cours.
-let etoiles = 0;
+// Progression enregistrée sur l'appareil (localStorage = petit espace de
+// stockage du navigateur, propre à cet appareil, qui survit à la fermeture).
+let progression = charger(window.localStorage);
+
+// État de la partie en cours.
+let matiereEnCours = null;
+let niveauEnCours = 1;
 let questionSuivante = null; // fonction qui donne la prochaine question
 let question = null; // question affichée
 let minuteur = null; // délai en attente (passage à la question suivante, déblocage)
@@ -73,6 +88,8 @@ for (const matiere of MATIERES) {
   $("matieres").appendChild(bouton);
 }
 
+$("bouton-album").addEventListener("click", afficherAlbum);
+
 for (const bouton of document.querySelectorAll("[data-retour]")) {
   bouton.addEventListener("click", retourAccueil);
 }
@@ -87,9 +104,18 @@ function afficherNiveaux(matiere) {
     const bouton = document.createElement("button");
     bouton.type = "button";
     bouton.className = "tuile";
-    bouton.style.background = niveau.couleur;
-    bouton.textContent = niveau.nom;
-    bouton.addEventListener("click", () => demarrer(matiere, niveau.numero));
+    const ouvert = niveauDebloque(progression, matiere.id, niveau.numero);
+    if (ouvert) {
+      bouton.style.background = niveau.couleur;
+      bouton.textContent = niveau.nom;
+      bouton.addEventListener("click", () => demarrer(matiere, niveau.numero));
+    } else {
+      // Niveau verrouillé : on explique combien de bonnes réponses il manque.
+      const manque = reussitesManquantes(progression, matiere.id, niveau.numero);
+      bouton.classList.add("verrouille");
+      bouton.disabled = true;
+      bouton.textContent = `🔒 ${niveau.nom} : encore ${manque} bonne${manque > 1 ? "s" : ""} réponse${manque > 1 ? "s" : ""} au niveau ${niveau.numero - 1}`;
+    }
     zone.appendChild(bouton);
   }
   afficherEcran("ecran-niveaux");
@@ -98,6 +124,8 @@ function afficherNiveaux(matiere) {
 // ---------- Jeu ----------
 
 function demarrer(matiere, niveau) {
+  matiereEnCours = matiere;
+  niveauEnCours = niveau;
   // sansRepetition : jamais deux fois la même question de suite.
   questionSuivante = sansRepetition(() => matiere.generer(niveau));
   afficherEcran("ecran-jeu");
@@ -127,10 +155,9 @@ function boutonsReponse() {
   return [...$("reponses").querySelectorAll(".reponse")];
 }
 
-function changerEtoiles(delta) {
-  etoiles = ajouterEtoiles(etoiles, delta);
+function afficherEtoiles() {
   const score = document.querySelector(".score");
-  $("etoiles").textContent = etoiles;
+  $("etoiles").textContent = progression.etoiles;
   // Relance l'animation : on retire la classe, on force le navigateur
   // à recalculer (offsetWidth), puis on la remet.
   score.classList.remove("change");
@@ -142,7 +169,13 @@ function cliquer(choix, bouton) {
   const resultat = repondre(question, choix);
   if (resultat.type === "ignore") return; // clic refusé par l'anti-triche
 
-  changerEtoiles(resultat.etoiles);
+  // Met à jour la progression, l'enregistre sur l'appareil, puis fête ce qui est gagné.
+  const gain = enregistrerResultat(progression, matiereEnCours.id, niveauEnCours, resultat);
+  progression = gain.etat;
+  sauvegarder(window.localStorage, progression);
+  afficherEtoiles();
+  if (gain.nouveauSticker) feter(gain.nouveauSticker, "Nouveau sticker pour ton album !");
+  if (gain.niveauDebloque) feter("🔓", `Bravo ! Le niveau ${gain.niveauDebloque} est débloqué !`);
 
   if (resultat.type === "bonne") {
     bouton.classList.add("juste");
@@ -188,3 +221,46 @@ function cliquer(choix, bouton) {
 }
 
 $("ecouter").addEventListener("click", () => lire(question.aLire));
+
+// ---------- Célébration (sticker gagné, niveau débloqué) ----------
+
+function feter(image, texte) {
+  const fete = document.createElement("div");
+  fete.className = "fete";
+  fete.setAttribute("role", "status");
+  fete.innerHTML = `<span class="fete-image" aria-hidden="true">${image}</span><span>${texte}</span>`;
+  // Toutes les célébrations vont dans une même zone : elles s'empilent sans se cacher.
+  let zone = $("fetes");
+  if (!zone) {
+    zone = document.createElement("div");
+    zone.id = "fetes";
+    document.body.appendChild(zone);
+  }
+  zone.appendChild(fete);
+  // La célébration disparaît toute seule après 2,5 secondes.
+  setTimeout(() => fete.remove(), 2500);
+}
+
+// ---------- Album de stickers ----------
+
+function afficherAlbum() {
+  const gagnes = stickersGagnes(progression);
+  // Le prochain sticker arrive quand les étoiles actuelles atteignent le palier suivant.
+  const prochain = (gagnes.length + 1) * ETOILES_PAR_STICKER - progression.etoiles;
+  $("info-album").textContent =
+    gagnes.length < STICKERS.length
+      ? `${gagnes.length} sticker${gagnes.length > 1 ? "s" : ""} sur ${STICKERS.length}. Prochain sticker dans ${prochain} étoile${prochain > 1 ? "s" : ""} !`
+      : "Bravo, ton album est complet !";
+  const zone = $("album");
+  zone.innerHTML = "";
+  STICKERS.forEach((sticker, i) => {
+    const case_ = document.createElement("div");
+    const gagne = i < gagnes.length;
+    case_.className = gagne ? "sticker" : "sticker cache";
+    case_.textContent = gagne ? sticker : "?";
+    zone.appendChild(case_);
+  });
+  afficherEcran("ecran-album");
+}
+
+afficherEtoiles();

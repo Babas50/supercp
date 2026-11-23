@@ -22,7 +22,8 @@ supercp/
 │       ├── voix.js           ← lecture à voix haute
 │       ├── son.js            ← sons de réussite et d'erreur
 │       ├── moteur/
-│       │   └── question.js   ← règles d'une question et anti-triche
+│       │   ├── question.js   ← règles d'une question et anti-triche
+│       │   └── progression.js← étoiles, niveaux, stickers, sauvegarde
 │       └── matieres/
 │           └── calcul.js     ← additions et soustractions
 ├── tests/                    ← tests unitaires
@@ -61,6 +62,13 @@ supercp/
 - Après 2 erreurs, la bonne réponse est montrée, sans étoile.
 - La bonne réponse change de place à chaque question.
 - Jamais deux fois la même question de suite, jamais deux réponses identiques.
+
+## Progression et récompenses
+
+- 3 niveaux par matière. Le niveau 1 est ouvert ; le niveau suivant s'ouvre
+  après 10 bonnes réponses au niveau d'avant.
+- Un sticker pour l'album toutes les 5 étoiles. Un sticker gagné n'est
+  jamais perdu.
 
 ## Vérification automatique (CI)
 
