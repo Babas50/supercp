@@ -22,6 +22,17 @@
         <!-- Les tuiles des matières sont ajoutées ici par js/app.js -->
         <nav id="matieres" class="grille" aria-label="Matières"></nav>
         <p id="message-accueil" class="message" role="status"></p>
+        <button type="button" class="tuile tuile-album" id="bouton-album">
+          <span class="icone" aria-hidden="true">📒</span>Mon album
+        </button>
+      </section>
+
+      <!-- Écran : l'album de stickers -->
+      <section id="ecran-album" hidden>
+        <p class="consigne">📒 Mon album</p>
+        <p class="message" id="info-album"></p>
+        <div class="album" id="album"></div>
+        <button type="button" class="retour" data-retour>🏠 Accueil</button>
       </section>
 
       <!-- Écran 2 : le choix du niveau (caché au départ grâce à "hidden") -->
