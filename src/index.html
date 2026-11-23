@@ -38,14 +38,24 @@
         <button type="button" class="tuile tuile-installer" id="bouton-installer" hidden>
           <span class="icone" aria-hidden="true">📲</span>Installer l'appli
         </button>
-        <div class="guide-apple" id="guide-apple" hidden>
+        <div class="guide-installation" id="guide-apple" hidden>
           <p><strong>Pour installer Super CP sur iPhone ou iPad :</strong></p>
           <ol>
-            <li>Ouvre cette page avec <strong>Safari</strong>.</li>
             <li>Touche le bouton <strong>Partager</strong> (le carré avec une flèche vers le haut ⬆️).</li>
             <li>Choisis <strong>« Sur l'écran d'accueil »</strong>.</li>
             <li>Touche <strong>« Ajouter »</strong>. L'icône Super CP apparaît !</li>
           </ol>
+          <p class="petit">Avant iOS 16.4, seul Safari permet cette installation.</p>
+          <button type="button" class="cest-fait" data-cest-fait>✅ C'est fait, ne plus afficher</button>
+        </div>
+        <div class="guide-installation" id="guide-firefox" hidden>
+          <p><strong>Pour installer Super CP avec Firefox :</strong></p>
+          <ol>
+            <li>Touche le menu <strong>⋮</strong> (les trois points).</li>
+            <li>Choisis <strong>« Installer »</strong> ou <strong>« Ajouter à l'écran d'accueil »</strong>.</li>
+            <li>Confirme. L'icône Super CP apparaît !</li>
+          </ol>
+          <button type="button" class="cest-fait" data-cest-fait>✅ C'est fait, ne plus afficher</button>
         </div>
       </section>
 
@@ -63,6 +73,22 @@
         <p class="message" id="info-album"></p>
         <div class="album" id="album"></div>
         <button type="button" class="retour" data-retour>🏠 Accueil</button>
+
+        <!-- Espace parents : discret, en bas de l'album -->
+        <details class="parents">
+          <summary>⚙️ Espace parents</summary>
+          <p>Effacer toute la progression : étoiles, stickers et niveaux. Utile quand l'enfant a tout terminé et veut recommencer.</p>
+          <button type="button" class="danger" id="bouton-effacer">Effacer la progression</button>
+          <div id="confirmation-effacer" hidden>
+            <label for="saisie-parent">Pour confirmer, combien font <strong id="question-parent"></strong> ?</label>
+            <input id="saisie-parent" type="text" inputmode="numeric" autocomplete="off" />
+            <div class="boutons-parents">
+              <button type="button" class="danger" id="confirmer-effacer">Confirmer l'effacement</button>
+              <button type="button" id="annuler-effacer">Annuler</button>
+            </div>
+          </div>
+          <p id="message-parents" role="status"></p>
+        </details>
       </section>
 
       <!-- Écran 2 : le choix du niveau (caché au départ grâce à "hidden") -->

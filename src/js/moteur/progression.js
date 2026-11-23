@@ -114,3 +114,31 @@ export function enregistrerResultat(etat, matiere, niveau, resultat, niveauMax =
     niveauDebloque: vientDOuvrir ? niveau + 1 : null,
   };
 }
+
+/**
+ * Efface toute la progression (étoiles, niveaux, stickers) et renvoie un état neuf.
+ * L'information "appli installée" n'est pas touchée : elle est rangée ailleurs.
+ */
+export function reinitialiser(stockage) {
+  try {
+    stockage.removeItem(CLE_STOCKAGE);
+  } catch {
+    // Stockage interdit : rien à effacer.
+  }
+  return etatInitial();
+}
+
+/**
+ * Question de calcul pour adulte (tables de 6 à 9), qui protège l'effacement :
+ * un enfant de CP ne peut pas y répondre par hasard.
+ */
+export function questionParent(hasard = Math.random) {
+  const a = 6 + Math.floor(hasard() * 4);
+  const b = 6 + Math.floor(hasard() * 4);
+  return { texte: `${a} × ${b}`, reponse: a * b };
+}
+
+/** Vérifie la réponse tapée (espaces tolérés). */
+export function reponseParentJuste(question, saisie) {
+  return String(saisie).trim() === String(question.reponse);
+}

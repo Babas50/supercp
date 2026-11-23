@@ -98,6 +98,24 @@ supercp/
 - **iPhone, iPad** : ouvrir l'adresse dans **Safari**, bouton Partager,
   puis « Sur l'écran d'accueil ». Le bouton de l'appli affiche ce guide.
 
+Si le bouton « Installer » apparaît alors que l'appli est déjà installée
+(le navigateur ne peut pas toujours le savoir), toucher « C'est fait, ne
+plus afficher » sous le guide.
+
+## Voix
+
+L'appli utilise la synthèse vocale de l'appareil et choisit la meilleure voix
+installée. Le bouton « 🔊 Écouter » relit plus lentement. Pour une voix
+anglaise plus claire sur Android : Paramètres → Accessibilité (ou Système)
+→ Synthèse vocale → moteur « Services vocaux Google » → télécharger une voix
+anglaise (Royaume-Uni).
+
+## Espace parents
+
+En bas de « Mon album » : « ⚙️ Espace parents » permet d'effacer toute la
+progression (étoiles, stickers, niveaux). Une multiplication est demandée
+pour confirmer, afin qu'un enfant ne puisse pas tout effacer par accident.
+
 ## Publier une nouvelle version
 
 1. Fusionner la pull request dans `main` : le workflow **Publication**

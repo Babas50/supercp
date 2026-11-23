@@ -13,6 +13,9 @@ import {
   SEUIL_DEBLOCAGE,
   ETOILES_PAR_STICKER,
   STICKERS,
+  reinitialiser,
+  questionParent,
+  reponseParentJuste,
 } from "../src/js/moteur/progression.js";
 
 // Faux localStorage : un simple dictionnaire en mémoire.
@@ -125,4 +128,37 @@ test("enregistrerResultat ne modifie pas l'ancien état", () => {
   const copie = structuredClone(avant);
   enregistrerResultat(avant, "additions", 1, BONNE);
   assert.deepEqual(avant, copie);
+});
+
+test("reinitialiser efface la progression enregistrée", () => {
+  const stockage = { ...fauxStockage(), removeItem(cle) { delete this.donnees[cle]; } };
+  const etat = jouer(etatInitial(), "additions", 1, Array(12).fill(BONNE));
+  sauvegarder(stockage, etat);
+  const neuf = reinitialiser(stockage);
+  assert.deepEqual(neuf, etatInitial());
+  assert.deepEqual(charger(stockage), etatInitial());
+  assert.equal(stickersGagnes(neuf).length, 0);
+  assert.equal(niveauDebloque(neuf, "additions", 2), false);
+});
+
+test("reinitialiser ne plante pas si le stockage est interdit", () => {
+  const stockage = { removeItem: () => { throw new Error("interdit"); } };
+  assert.deepEqual(reinitialiser(stockage), etatInitial());
+});
+
+test("question parent : multiplication des tables de 6 à 9", () => {
+  for (let k = 0; k < 200; k++) {
+    const q = questionParent();
+    const [a, b] = q.texte.split(" × ").map(Number);
+    assert.ok(a >= 6 && a <= 9 && b >= 6 && b <= 9);
+    assert.equal(q.reponse, a * b);
+  }
+});
+
+test("réponse parent : juste, fausse, espaces tolérés", () => {
+  const q = { texte: "7 × 8", reponse: 56 };
+  assert.ok(reponseParentJuste(q, "56"));
+  assert.ok(reponseParentJuste(q, " 56 "));
+  assert.ok(!reponseParentJuste(q, "54"));
+  assert.ok(!reponseParentJuste(q, ""));
 });
