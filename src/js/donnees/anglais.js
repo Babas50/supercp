@@ -24,6 +24,20 @@ export const ANIMAUX = [
   { mot: "pig", image: "🐷" },
   { mot: "duck", image: "🦆" },
   { mot: "lion", image: "🦁" },
+  { mot: "sheep", image: "🐑" },
+  { mot: "goat", image: "🐐" },
+  { mot: "mouse", image: "🐭" },
+  { mot: "frog", image: "🐸" },
+  { mot: "bear", image: "🐻" },
+  { mot: "monkey", image: "🐵" },
+  { mot: "elephant", image: "🐘" },
+  { mot: "tiger", image: "🐯" },
+  { mot: "chicken", image: "🐔" },
+  { mot: "owl", image: "🦉" },
+  { mot: "turtle", image: "🐢" },
+  { mot: "bee", image: "🐝" },
+  { mot: "penguin", image: "🐧" },
+  { mot: "fox", image: "🦊" },
 ];
 
 export const NOMBRES = [

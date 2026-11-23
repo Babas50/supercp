@@ -36,6 +36,20 @@ test("chaque mot à trouver apparaît une seule fois dans sa phrase", () => {
   }
 });
 
+test("pas de doublon : phrases, images et mots à trouver tous différents", () => {
+  for (const champ of ["phrase", "image", "trou"]) {
+    const valeurs = PHRASES.map((p) => p[champ]);
+    assert.equal(new Set(valeurs).size, valeurs.length, `doublon dans "${champ}"`);
+  }
+});
+
+test("pas de doublon dans le vocabulaire anglais", () => {
+  for (const liste of [COULEURS, ANIMAUX]) {
+    assert.equal(new Set(liste.map((x) => x.mot)).size, liste.length);
+    assert.equal(new Set(liste.map((x) => x.image)).size, liste.length);
+  }
+});
+
 test("phrases niveau 1 : remettre le mot dans le trou redonne la phrase", () => {
   for (let k = 0; k < ESSAIS; k++) {
     const q = genererPhrase(1);
