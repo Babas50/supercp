@@ -4,23 +4,30 @@ Application d'apprentissage pour les enfants de CP : lettres, chiffres, mots,
 phrases, additions, soustractions, anglais, memory, dictée, heure, formes,
 jours et mois. Fun, colorée, avec niveaux de difficulté et récompenses.
 
-Elle fonctionne dans un navigateur et sera **installable** sur Android,
-iPhone, iPad, tablettes et PC Windows (technologie PWA, ajoutée dans une
-prochaine étape).
+Elle fonctionne dans un navigateur et s'**installe** sur Android, iPhone,
+iPad, tablettes et PC Windows (technologie PWA), puis marche sans connexion.
+
+Adresse : **https://babas50.github.io/supercp/**
 
 ## Structure du projet
 
 ```
 supercp/
-├── .github/workflows/ci.yml  ← vérification automatique sur GitHub
+├── .github/workflows/
+│   ├── ci.yml                ← vérification automatique sur GitHub
+│   └── deploy.yml            ← publication sur GitHub Pages
 ├── src/                      ← l'application (ce que voit l'enfant)
 │   ├── index.html            ← la page
 │   ├── styles.css            ← couleurs et mise en page
+│   ├── manifest.webmanifest  ← nom, icônes, couleurs pour l'installation
+│   ├── sw.js                 ← service worker (fonctionnement hors connexion)
+│   ├── icones/               ← icônes de l'appli
 │   └── js/
 │       ├── app.js            ← écrans et déroulement du jeu
 │       ├── aleatoire.js      ← hasard et anti-répétition
 │       ├── voix.js           ← lecture à voix haute
 │       ├── son.js            ← sons de réussite et d'erreur
+│       ├── installation.js   ← bouton Installer et guide iPhone/iPad
 │       ├── moteur/
 │       │   ├── question.js   ← règles d'une question et anti-triche
 │       │   └── progression.js← étoiles, niveaux, stickers, sauvegarde
@@ -69,6 +76,21 @@ supercp/
   après 10 bonnes réponses au niveau d'avant.
 - Un sticker pour l'album toutes les 5 étoiles. Un sticker gagné n'est
   jamais perdu.
+
+## Installer l'appli
+
+- **Android, PC Windows (Chrome ou Edge)** : bouton « 📲 Installer l'appli »
+  sur l'accueil, ou icône d'installation dans la barre d'adresse.
+- **iPhone, iPad** : ouvrir l'adresse dans **Safari**, bouton Partager,
+  puis « Sur l'écran d'accueil ». Le bouton de l'appli affiche ce guide.
+
+## Publier une nouvelle version
+
+1. Fusionner la pull request dans `main` : le workflow **Publication**
+   vérifie le code puis met l'appli en ligne (2 minutes environ).
+2. **Important** : dans `src/sw.js`, augmenter le numéro `VERSION`
+   (`supercp-v1` → `supercp-v2`) quand des fichiers de l'appli changent,
+   sinon les appareils garderont l'ancienne version.
 
 ## Vérification automatique (CI)
 

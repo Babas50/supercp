@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fond plein (pas de coins arrondis : le téléphone découpe lui-même la forme) -->
+  <rect width="512" height="512" fill="#ff7a59"/>
+  <!-- Contenu réduit à 85 % pour rester dans la zone visible sur Android (icône "maskable") -->
+  <g transform="translate(256 256) scale(0.85) translate(-256 -256)">
+  <!-- Étoile jaune -->
+  <polygon fill="#ffd93d" points="256,70 290,160 385,162 310,220 337,312 256,258 175,312 202,220 127,162 222,160"/>
+  <!-- Texte CP, dans la zone centrale de sécurité -->
+  <text x="256" y="430" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="150" font-weight="bold" fill="#fff" text-anchor="middle">CP</text>
+  </g>
+</svg>

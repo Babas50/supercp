@@ -7,6 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Super CP</title>
     <meta name="theme-color" content="#ff7a59" />
+    <meta name="description" content="Apprendre en s'amusant au CP : lettres, chiffres, mots, calcul, anglais." />
+    <!-- Installation : le manifest décrit l'appli (nom, icônes, couleurs). -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icones/favicon-32.png" type="image/png" />
+    <!-- iPhone / iPad : icône et nom sur l'écran d'accueil, plein écran. -->
+    <link rel="apple-touch-icon" href="icones/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Super CP" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -25,6 +33,20 @@
         <button type="button" class="tuile tuile-album" id="bouton-album">
           <span class="icone" aria-hidden="true">📒</span>Mon album
         </button>
+
+        <!-- Installation : caché tant qu'on ne sait pas si l'appareil le permet -->
+        <button type="button" class="tuile tuile-installer" id="bouton-installer" hidden>
+          <span class="icone" aria-hidden="true">📲</span>Installer l'appli
+        </button>
+        <div class="guide-apple" id="guide-apple" hidden>
+          <p><strong>Pour installer Super CP sur iPhone ou iPad :</strong></p>
+          <ol>
+            <li>Ouvre cette page avec <strong>Safari</strong>.</li>
+            <li>Touche le bouton <strong>Partager</strong> (le carré avec une flèche vers le haut ⬆️).</li>
+            <li>Choisis <strong>« Sur l'écran d'accueil »</strong>.</li>
+            <li>Touche <strong>« Ajouter »</strong>. L'icône Super CP apparaît !</li>
+          </ol>
+        </div>
       </section>
 
       <!-- Écran : l'album de stickers -->

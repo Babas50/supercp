@@ -14,6 +14,7 @@ import {
 import { genererAddition, genererSoustraction } from "./matieres/calcul.js";
 import { lire } from "./voix.js";
 import { sonBravo, sonErreur } from "./son.js";
+import { activerHorsConnexion, preparerInstallation } from "./installation.js";
 
 // Liste des matières : nom affiché, icône (emoji), couleur de la tuile
 // et "generer" = la fonction qui fabrique une question (absente = pas encore prête).
@@ -264,3 +265,8 @@ function afficherAlbum() {
 }
 
 afficherEtoiles();
+
+// ---------- Installation sur l'appareil ----------
+
+activerHorsConnexion();
+preparerInstallation($("bouton-installer"), $("guide-apple"));

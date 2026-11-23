@@ -1,0 +1,53 @@
+# Publication de l'appli sur GitHub Pages (hébergement gratuit de GitHub).
+# Se lance à chaque modification de la branche main, donc après chaque fusion
+# de pull request. Adresse de l'appli : https://babas50.github.io/supercp/
+
+name: Publication
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # ajoute un bouton "Run workflow" pour relancer à la main
+
+# Droits nécessaires pour publier sur GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois ; une nouvelle remplace celle en attente.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # 1. On revérifie le code : on ne publie jamais une version cassée.
+  verifier:
+    name: Linter et tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+
+  # 2. On publie le dossier src/ (l'appli) sur GitHub Pages.
+  publier:
+    name: Publier sur GitHub Pages
+    needs: verifier # attend que la vérification réussisse
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publication.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: src
+      - id: publication
+        uses: actions/deploy-pages@v4
