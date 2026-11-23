@@ -311,3 +311,42 @@ main {
 .enonce {
   overflow-wrap: anywhere;
 }
+
+/* ---------- Memory ---------- */
+
+.cartes {
+  display: grid;
+  /* --colonnes est réglé par app.js selon le nombre de cartes */
+  grid-template-columns: repeat(var(--colonnes, 3), 1fr);
+  gap: 0.6rem;
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.carte {
+  aspect-ratio: 1; /* cartes carrées */
+  border: none;
+  border-radius: 1rem;
+  font-size: clamp(1.8rem, 9vw, 3rem);
+  background: #e84393;
+  color: white;
+  box-shadow: 0 0.25rem 0 rgb(0 0 0 / 0.2);
+  cursor: pointer;
+  transition: transform 0.2s;
+  font-weight: bold;
+}
+
+.carte.retournee {
+  background: white;
+  transform: rotateY(180deg) scaleX(-1); /* petit effet de retournement */
+}
+
+.carte.trouvee {
+  background: #d5f5e3;
+  cursor: default;
+}
+
+/* Réponses très longues (des phrases) : une seule colonne. */
+.reponses.reponses-phrases {
+  grid-template-columns: 1fr;
+}

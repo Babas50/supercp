@@ -4,7 +4,7 @@
 
 // IMPORTANT : changez ce numéro à chaque mise à jour de l'appli,
 // sinon les appareils garderont l'ancienne version en mémoire.
-const VERSION = "supercp-v2";
+const VERSION = "supercp-v3";
 
 // Liste des fichiers à garder sur l'appareil.
 const FICHIERS = [
@@ -19,11 +19,16 @@ const FICHIERS = [
   "./js/installation.js",
   "./js/moteur/question.js",
   "./js/moteur/progression.js",
+  "./js/moteur/memory.js",
   "./js/matieres/calcul.js",
   "./js/matieres/lettres.js",
   "./js/matieres/chiffres.js",
   "./js/matieres/mots.js",
+  "./js/matieres/phrases.js",
+  "./js/matieres/anglais.js",
   "./js/donnees/mots.js",
+  "./js/donnees/phrases.js",
+  "./js/donnees/anglais.js",
   "./icones/icone-192.png",
   "./icones/icone-512.png",
   "./icones/apple-touch-icon.png",
