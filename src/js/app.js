@@ -15,21 +15,25 @@ import { genererAddition, genererSoustraction } from "./matieres/calcul.js";
 import { genererLettre } from "./matieres/lettres.js";
 import { genererChiffre } from "./matieres/chiffres.js";
 import { genererMot } from "./matieres/mots.js";
+import { genererPhrase } from "./matieres/phrases.js";
+import { genererAnglais } from "./matieres/anglais.js";
+import { creerPartie, toucherCarte, cacherRatees } from "./moteur/memory.js";
 import { lire } from "./voix.js";
 import { sonBravo, sonErreur } from "./son.js";
 import { activerHorsConnexion, preparerInstallation } from "./installation.js";
 
 // Liste des matières : nom affiché, icône (emoji), couleur de la tuile
-// et "generer" = la fonction qui fabrique une question (absente = pas encore prête).
+// et "generer" = la fonction qui fabrique une question,
+// ou "jeu" pour un jeu à part (memory). Sans les deux : pas encore prête.
 const MATIERES = [
   { id: "lettres", nom: "Lettres", icone: "🔤", couleur: "#e74c3c", generer: genererLettre },
   { id: "chiffres", nom: "Chiffres", icone: "🔢", couleur: "#e67e22", generer: genererChiffre },
   { id: "mots", nom: "Mots", icone: "📖", couleur: "#d4a20b", generer: genererMot },
-  { id: "phrases", nom: "Phrases", icone: "✏️", couleur: "#2ecc71" },
+  { id: "phrases", nom: "Phrases", icone: "✏️", couleur: "#2ecc71", generer: genererPhrase },
   { id: "additions", nom: "Additions", icone: "➕", couleur: "#1abc9c", generer: genererAddition },
   { id: "soustractions", nom: "Soustractions", icone: "➖", couleur: "#3498db", generer: genererSoustraction },
-  { id: "anglais", nom: "Anglais", icone: "🇬🇧", couleur: "#9b59b6" },
-  { id: "memory", nom: "Memory", icone: "🃏", couleur: "#e84393" },
+  { id: "anglais", nom: "Anglais", icone: "🇬🇧", couleur: "#9b59b6", generer: genererAnglais },
+  { id: "memory", nom: "Memory", icone: "🃏", couleur: "#e84393", jeu: "memory" },
   { id: "dictee", nom: "Dictée", icone: "👂", couleur: "#16a085" },
   { id: "heure", nom: "L'heure", icone: "🕒", couleur: "#d35400" },
   { id: "formes", nom: "Formes", icone: "🔺", couleur: "#2980b9" },
@@ -83,7 +87,7 @@ for (const matiere of MATIERES) {
   // aria-hidden : l'icône décorative n'est pas lue par les lecteurs d'écran.
   bouton.innerHTML = `<span class="icone" aria-hidden="true">${matiere.icone}</span>${matiere.nom}`;
   bouton.addEventListener("click", () => {
-    if (matiere.generer) {
+    if (matiere.generer || matiere.jeu) {
       afficherNiveaux(matiere);
     } else {
       $("message-accueil").textContent = `${matiere.nom} : bientôt disponible !`;
@@ -130,6 +134,10 @@ function afficherNiveaux(matiere) {
 function demarrer(matiere, niveau) {
   matiereEnCours = matiere;
   niveauEnCours = niveau;
+  if (matiere.jeu === "memory") {
+    demarrerMemory(niveau);
+    return;
+  }
   // sansRepetition : jamais deux fois la même question de suite.
   questionSuivante = sansRepetition(() => matiere.generer(niveau));
   afficherEcran("ecran-jeu");
@@ -146,6 +154,8 @@ function poserQuestion() {
   zone.classList.remove("bloquee");
   // Réponses longues (des mots) : police plus petite pour tenir dans le bouton.
   const reponsesLongues = question.choix.some((c) => String(c).length > 3);
+  // Des phrases entières : une seule colonne pour qu'elles restent lisibles.
+  zone.classList.toggle("reponses-phrases", question.choix.some((c) => String(c).length > 12));
   for (const choix of question.choix) {
     const bouton = document.createElement("button");
     bouton.type = "button";
@@ -155,7 +165,7 @@ function poserQuestion() {
     bouton.addEventListener("click", () => cliquer(choix, bouton));
     zone.appendChild(bouton);
   }
-  lire(question.aLire);
+  lire(question.aLire, question.langue);
 }
 
 function boutonsReponse() {
@@ -172,17 +182,21 @@ function afficherEtoiles() {
   score.classList.add("change");
 }
 
-function cliquer(choix, bouton) {
-  const resultat = repondre(question, choix);
-  if (resultat.type === "ignore") return; // clic refusé par l'anti-triche
-
-  // Met à jour la progression, l'enregistre sur l'appareil, puis fête ce qui est gagné.
+// Met à jour la progression, l'enregistre sur l'appareil, puis fête ce qui est gagné.
+function enregistrer(resultat) {
   const gain = enregistrerResultat(progression, matiereEnCours.id, niveauEnCours, resultat);
   progression = gain.etat;
   sauvegarder(window.localStorage, progression);
   afficherEtoiles();
   if (gain.nouveauSticker) feter(gain.nouveauSticker, "Nouveau sticker pour ton album !");
   if (gain.niveauDebloque) feter("🔓", `Bravo ! Le niveau ${gain.niveauDebloque} est débloqué !`);
+}
+
+function cliquer(choix, bouton) {
+  const resultat = repondre(question, choix);
+  if (resultat.type === "ignore") return; // clic refusé par l'anti-triche
+
+  enregistrer(resultat);
 
   if (resultat.type === "bonne") {
     bouton.classList.add("juste");
@@ -227,7 +241,71 @@ function cliquer(choix, bouton) {
   }, DELAI_BLOCAGE_MS);
 }
 
-$("ecouter").addEventListener("click", () => lire(question.aLire));
+$("ecouter").addEventListener("click", () => lire(question.aLire, question.langue));
+
+// ---------- Memory ----------
+
+let partie = null;
+
+function demarrerMemory(niveau) {
+  partie = creerPartie(niveau);
+  const zone = $("cartes");
+  zone.innerHTML = "";
+  // Nombre de colonnes : 3 pour 6 ou 12 cartes, 4 pour 16 cartes.
+  zone.style.setProperty("--colonnes", partie.cartes.length === 16 ? 4 : 3);
+  partie.cartes.forEach((carte, position) => {
+    const bouton = document.createElement("button");
+    bouton.type = "button";
+    bouton.className = "carte";
+    bouton.setAttribute("aria-label", `Carte ${position + 1}`);
+    bouton.addEventListener("click", () => toucher(position));
+    zone.appendChild(bouton);
+  });
+  $("message-memory").textContent = "";
+  afficherCartes();
+  afficherEcran("ecran-memory");
+  lire("Retrouve les paires d'images identiques.");
+}
+
+// Redessine les cartes d'après l'état de la partie.
+function afficherCartes() {
+  [...$("cartes").children].forEach((bouton, i) => {
+    const carte = partie.cartes[i];
+    const montree = carte.visible || carte.trouvee;
+    bouton.textContent = montree ? carte.image : "?"; // dos de la carte
+    bouton.classList.toggle("retournee", montree);
+    bouton.classList.toggle("trouvee", carte.trouvee);
+  });
+}
+
+function toucher(position) {
+  const resultat = toucherCarte(partie, position);
+  if (resultat.type === "ignore") return;
+  afficherCartes();
+
+  if (resultat.type === "ratee") {
+    sonErreur();
+    $("message-memory").textContent = "Pas pareil… Mémorise bien !";
+    // Après 1 seconde, les deux cartes se retournent.
+    clearTimeout(minuteur);
+    minuteur = setTimeout(() => {
+      cacherRatees(partie);
+      afficherCartes();
+    }, DELAI_BLOCAGE_MS);
+    return;
+  }
+  if (resultat.type === "paire" || resultat.type === "finie") {
+    sonBravo();
+    enregistrer({ type: "bonne", etoiles: resultat.etoiles });
+    $("message-memory").textContent = "Une paire ! ⭐";
+  }
+  if (resultat.type === "finie") {
+    const texte = `Bravo, tu as tout trouvé en ${partie.coups} coups !`;
+    $("message-memory").textContent = `🎉 ${texte}`;
+    lire(texte);
+    minuteur = setTimeout(() => demarrerMemory(niveauEnCours), 3500);
+  }
+}
 
 // ---------- Célébration (sticker gagné, niveau débloqué) ----------
 
