@@ -22,8 +22,30 @@ function questionImage(liste, consigne, hasard) {
   });
 }
 
+/** Carré de couleur en SVG, avec un bord gris pour que le blanc se voie aussi. */
+export function pastille(teinte) {
+  return `<svg viewBox="0 0 100 100" class="pastille" aria-hidden="true"><rect x="6" y="6" width="88" height="88" rx="16" fill="${teinte}" stroke="#dfe6e9" stroke-width="8"/></svg>`;
+}
+
+// Couleurs : la réponse est le mot ("orange"), mais le bouton montre le carré dessiné.
+function questionCouleur(hasard) {
+  const { mot } = COULEURS[entierAleatoire(0, COULEURS.length - 1, hasard)];
+  const autres = melanger(COULEURS.filter((x) => x.mot !== mot), hasard).slice(0, 3);
+  return creerQuestion({
+    consigne: "Écoute et touche la couleur",
+    enonce: "🔊",
+    cle: mot,
+    aLire: mot,
+    langue: LANGUE_ANGLAIS,
+    dessins: Object.fromEntries(COULEURS.map((c) => [c.mot, pastille(c.teinte)])),
+    bonneReponse: mot,
+    distracteurs: autres.map((x) => x.mot),
+    hasard,
+  });
+}
+
 export function genererAnglais(niveau, hasard = Math.random) {
-  if (niveau === 1) return questionImage(COULEURS, "Écoute et touche la couleur", hasard);
+  if (niveau === 1) return questionCouleur(hasard);
   if (niveau === 2) return questionImage(ANIMAUX, "Écoute et touche l'animal", hasard);
   if (niveau === 3) {
     const n = entierAleatoire(0, 10, hasard);

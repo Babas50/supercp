@@ -1,16 +1,20 @@
 // Vocabulaire d'anglais : le mot anglais (lu par la voix anglaise) et son image.
 // Contenu pédagogique à relire par un adulte.
 
+// Les couleurs sont dessinées par l'appli avec un code couleur précis ("teinte"),
+// et non plus avec des emoji carrés : chaque téléphone dessine ses emoji à sa façon,
+// et sur certains le carré jaune paraît orange. Ici, la couleur est la même partout.
+// Une teinte s'écrit "#RRVVBB" : quantité de rouge, de vert et de bleu (00 à ff).
 export const COULEURS = [
-  { mot: "red", image: "🟥" },
-  { mot: "blue", image: "🟦" },
-  { mot: "green", image: "🟩" },
-  { mot: "yellow", image: "🟨" },
-  { mot: "orange", image: "🟧" },
-  { mot: "purple", image: "🟪" },
-  { mot: "black", image: "⬛" },
-  { mot: "white", image: "⬜" },
-  { mot: "brown", image: "🟫" },
+  { mot: "red", teinte: "#e53935" },
+  { mot: "blue", teinte: "#1e63d6" },
+  { mot: "green", teinte: "#2e9e44" },
+  { mot: "yellow", teinte: "#ffe100" },
+  { mot: "orange", teinte: "#ff7f00" },
+  { mot: "purple", teinte: "#8e44ad" },
+  { mot: "black", teinte: "#111111" },
+  { mot: "white", teinte: "#ffffff" },
+  { mot: "brown", teinte: "#7b4a26" },
 ];
 
 export const ANIMAUX = [

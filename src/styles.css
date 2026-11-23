@@ -171,6 +171,14 @@ main {
   cursor: not-allowed;
 }
 
+/* Carré de couleur dessiné dans un bouton (anglais, couleurs). */
+.pastille {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: block;
+  margin: auto;
+}
+
 /* Mauvaise réponse cliquée : grisée et barrée. */
 .reponse.fausse {
   background: #b2bec3;
