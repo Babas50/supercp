@@ -15,6 +15,13 @@
   box-sizing: border-box;
 }
 
+/* L'attribut "hidden" doit TOUJOURS cacher l'élément, même si une autre
+   règle (ex. "display: flex" des tuiles) dit le contraire. Sans cette règle,
+   le bouton « Installer » restait visible alors qu'il devait être caché. */
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   margin: 0;
@@ -287,7 +294,7 @@ main {
   background: linear-gradient(135deg, #00b894, #0984e3);
 }
 
-.guide-apple {
+.guide-installation {
   margin-top: 1rem;
   padding: 1rem 1.25rem;
   border-radius: 1rem;
@@ -296,7 +303,7 @@ main {
   line-height: 1.5;
 }
 
-.guide-apple ol {
+.guide-installation ol {
   padding-left: 1.25rem;
 }
 
@@ -364,7 +371,65 @@ main {
   height: auto;
 }
 
-/* "display: flex" ci-dessus annulerait l'attribut hidden : on le rétablit. */
-.illustration[hidden] {
-  display: none;
+.petit {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.cest-fait {
+  padding: 0.5rem 1rem;
+  border: 2px solid #2ecc71;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+}
+
+/* ---------- Espace parents ---------- */
+
+.parents {
+  margin-top: 2rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: #f1f2f6;
+  font-size: 1rem;
+}
+
+.parents summary {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.parents input {
+  display: block;
+  width: 100%;
+  max-width: 10rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  font: inherit;
+  font-size: 1.2rem;
+}
+
+.boutons-parents {
+  display: flex;
+  flex-wrap: wrap; /* les boutons passent à la ligne sur petit écran */
+  gap: 0.5rem;
+}
+
+.parents button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.parents .danger {
+  background: #e74c3c;
+  color: white;
+}
+
+#confirmation-effacer {
+  margin-top: 0.75rem;
 }

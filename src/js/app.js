@@ -8,6 +8,9 @@ import {
   reussitesManquantes,
   enregistrerResultat,
   stickersGagnes,
+  reinitialiser,
+  questionParent,
+  reponseParentJuste,
   STICKERS,
   ETOILES_PAR_STICKER,
 } from "./moteur/progression.js";
@@ -249,7 +252,8 @@ function cliquer(choix, bouton) {
   }, DELAI_BLOCAGE_MS);
 }
 
-$("ecouter").addEventListener("click", () => lire(question.aLire, question.langue));
+// Réécouter : plus lentement, pour bien entendre chaque son.
+$("ecouter").addEventListener("click", () => lire(question.aLire, question.langue, true));
 
 // ---------- Memory ----------
 
@@ -358,7 +362,48 @@ function afficherAlbum() {
 
 afficherEtoiles();
 
+// ---------- Espace parents : effacer la progression ----------
+// Deux étapes pour éviter un effacement par accident :
+// 1. bouton "Effacer", 2. une multiplication d'adulte à résoudre.
+
+let questionEffacement = null;
+
+$("bouton-effacer").addEventListener("click", () => {
+  questionEffacement = questionParent();
+  $("question-parent").textContent = questionEffacement.texte;
+  $("saisie-parent").value = "";
+  $("message-parents").textContent = "";
+  $("confirmation-effacer").hidden = false;
+  $("saisie-parent").focus();
+});
+
+$("annuler-effacer").addEventListener("click", () => {
+  $("confirmation-effacer").hidden = true;
+  $("message-parents").textContent = "";
+});
+
+$("confirmer-effacer").addEventListener("click", () => {
+  if (!reponseParentJuste(questionEffacement, $("saisie-parent").value)) {
+    // Mauvaise réponse : nouvelle question, rien n'est effacé.
+    questionEffacement = questionParent();
+    $("question-parent").textContent = questionEffacement.texte;
+    $("saisie-parent").value = "";
+    $("message-parents").textContent = "Ce n'est pas la bonne réponse. Rien n'a été effacé.";
+    return;
+  }
+  progression = reinitialiser(window.localStorage);
+  $("confirmation-effacer").hidden = true;
+  $("message-parents").textContent = "C'est fait : la progression est remise à zéro.";
+  afficherEtoiles();
+  afficherAlbum();
+});
+
 // ---------- Installation sur l'appareil ----------
 
 activerHorsConnexion();
-preparerInstallation($("bouton-installer"), $("guide-apple"));
+preparerInstallation({
+  bouton: $("bouton-installer"),
+  guideApple: $("guide-apple"),
+  guideFirefox: $("guide-firefox"),
+  boutonsCestFait: document.querySelectorAll("[data-cest-fait]"),
+});
