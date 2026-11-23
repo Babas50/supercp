@@ -16,6 +16,8 @@ export const ERREURS_MAX = 2;
  * - enonce : le texte affiché (ex. "3 + 4")
  * - aLire : le texte lu à voix haute (par défaut, l'énoncé)
  * - illustration : dessin SVG affiché sous l'énoncé (horloge, formes), facultatif
+ * - dessins : facultatif, associe à une réponse le dessin SVG à montrer sur son bouton
+ *             à la place du texte (ex. { orange: "<svg>…</svg>" } pour les couleurs)
  * - langue : langue de la voix ("fr-FR" par défaut, "en-GB" pour l'anglais)
  * - consigne : petite phrase affichée au-dessus (ex. "Combien y en a-t-il ?")
  * - cle : ce qui identifie la question pour éviter les répétitions
@@ -32,6 +34,7 @@ export function creerQuestion({
   cle = enonce,
   langue = "fr-FR",
   illustration = "",
+  dessins = null,
   bonneReponse,
   distracteurs,
   hasard = Math.random,
@@ -57,6 +60,7 @@ export function creerQuestion({
     cle,
     langue,
     illustration,
+    dessins,
     bonneReponse,
     // Mélange : la bonne réponse n'est jamais toujours à la même place.
     choix: melanger([bonneReponse, ...mauvaises], hasard),

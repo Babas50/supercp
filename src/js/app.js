@@ -164,14 +164,20 @@ function poserQuestion() {
   zone.innerHTML = "";
   zone.classList.remove("bloquee");
   // Réponses longues (des mots) : police plus petite pour tenir dans le bouton.
-  const reponsesLongues = question.choix.some((c) => String(c).length > 3);
+  // (sauf si les boutons montrent des dessins, comme les carrés de couleur)
+  const reponsesLongues = !question.dessins && question.choix.some((c) => String(c).length > 3);
   // Des phrases entières : une seule colonne pour qu'elles restent lisibles.
-  zone.classList.toggle("reponses-phrases", question.choix.some((c) => String(c).length > 12));
+  zone.classList.toggle("reponses-phrases", !question.dessins && question.choix.some((c) => String(c).length > 12));
   for (const choix of question.choix) {
     const bouton = document.createElement("button");
     bouton.type = "button";
     bouton.className = reponsesLongues ? "reponse reponse-mot" : "reponse";
-    bouton.textContent = choix;
+    if (question.dessins) {
+      // Dessin SVG fabriqué par l'appli elle-même (pas par l'utilisateur), donc sans risque.
+      bouton.innerHTML = question.dessins[choix];
+    } else {
+      bouton.textContent = choix;
+    }
     bouton.dataset.valeur = String(choix); // garde la valeur pour la retrouver plus tard
     bouton.addEventListener("click", () => cliquer(choix, bouton));
     zone.appendChild(bouton);
@@ -231,7 +237,10 @@ function cliquer(choix, bouton) {
       b.disabled = true;
       if (b.dataset.valeur === String(question.bonneReponse)) b.classList.add("juste");
     }
-    const texte = `La bonne réponse était ${question.bonneReponse}.`;
+    // Avec des dessins, le nom de la réponse (ex. "orange") n'est pas à l'écran : on montre le bouton vert.
+    const texte = question.dessins
+      ? "La bonne réponse est en vert."
+      : `La bonne réponse était ${question.bonneReponse}.`;
     $("message-jeu").textContent = texte;
     lire(texte);
     minuteur = setTimeout(poserQuestion, 3000);

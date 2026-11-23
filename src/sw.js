@@ -4,7 +4,7 @@
 
 // IMPORTANT : changez ce numéro à chaque mise à jour de l'appli,
 // sinon les appareils garderont l'ancienne version en mémoire.
-const VERSION = "supercp-v5";
+const VERSION = "supercp-v6";
 
 // Liste des fichiers à garder sur l'appareil.
 const FICHIERS = [
