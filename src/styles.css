@@ -299,3 +299,15 @@ main {
 .guide-apple ol {
   padding-left: 1.25rem;
 }
+
+/* Réponses qui sont des mots : police plus petite, coupure si besoin. */
+.reponse.reponse-mot {
+  font-size: clamp(1.4rem, 6.5vw, 2.2rem);
+  overflow-wrap: anywhere;
+  padding: 0.5rem;
+}
+
+/* L'énoncé peut contenir beaucoup d'emoji (compter jusqu'à 10) : retour à la ligne. */
+.enonce {
+  overflow-wrap: anywhere;
+}

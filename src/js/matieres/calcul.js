@@ -15,16 +15,16 @@ function maxDuNiveau(niveau) {
 
 /**
  * Fabrique "combien" mauvaises réponses proches de la bonne
- * (les erreurs crédibles sont à 1 ou 2 près), comprises entre 0 et max.
+ * (les erreurs crédibles sont à 1 ou 2 près), comprises entre min et max.
  */
-export function distracteursProches(bonne, max, combien = 3, hasard = Math.random) {
+export function distracteursProches(bonne, max, combien = 3, hasard = Math.random, min = 0) {
   const resultat = new Set();
   let ecart = 1;
   // On essaie bonne+1, bonne-1, bonne+2, bonne-2... dans un ordre un peu mélangé.
-  while (resultat.size < combien && ecart <= max + 1) {
+  while (resultat.size < combien && ecart <= max - min + 1) {
     const candidats = hasard() < 0.5 ? [bonne + ecart, bonne - ecart] : [bonne - ecart, bonne + ecart];
     for (const c of candidats) {
-      if (c >= 0 && c <= max && c !== bonne && resultat.size < combien) resultat.add(c);
+      if (c >= min && c <= max && c !== bonne && resultat.size < combien) resultat.add(c);
     }
     ecart += 1;
   }
